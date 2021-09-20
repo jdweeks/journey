@@ -1,7 +1,7 @@
 SRC        := ./...
 TARGET 	   := www
 GO         := /usr/bin/env go
-ALL 	     := clean lint build test
+ALL 	   := clean lint build test
 
 .PHONY: $(ALL) pretty run
 
