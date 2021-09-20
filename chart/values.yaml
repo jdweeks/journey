@@ -1,0 +1,27 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jdweeks/journey
+  pullPolicy: Always
+  tag: main
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  autoIngress: true
+  type: ClusterIP
+  port: 80
+
+autoscaling:
+  enabled: false
+
+resources: {}
