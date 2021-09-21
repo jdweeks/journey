@@ -37,19 +37,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  deploy-k8s:
-    needs: build-and-publish
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Helm install
-        uses: deliverybot/helm@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          helm: helm3
-          release: journey
-          namespace: jdweeks
-          chart: chart
-        env:
-          KUBECONFIG_FILE: ${{ secrets.KUBECONFIG }}

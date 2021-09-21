@@ -36,7 +36,7 @@ func main() {
 	gothic.Store = store
 
 	goth.UseProviders(
-		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3000/auth/google/callback", "email", "profile"),
+		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), os.Getenv("GOOGLE_OAUTH_REDIRECT"), "email", "profile"),
 	)
 
 	p := mux.NewRouter()
@@ -47,7 +47,7 @@ func main() {
 			fmt.Fprintln(res, err)
 			return
 		}
-		t, _ := template.ParseFiles("templates/success.html")
+		t, _ := template.ParseFiles("resources/success.html")
 		t.Execute(res, user)
 	})
 
@@ -62,9 +62,9 @@ func main() {
 	})
 
 	p.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		t, _ := template.ParseFiles("templates/index.html")
+		t, _ := template.ParseFiles("resources/index.html")
 		t.Execute(res, false)
 	})
-	log.Println("listening on localhost:3000")
+	log.Println("listening on 3000")
 	log.Fatal(http.ListenAndServe(":3000", p))
 }
