@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"os"
 
-  "strconv"
 	"log"
+	"strconv"
 
-	"github.com/gorilla/pat"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
@@ -20,7 +20,7 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	key := os.Getenv("SESSION_KEY")
@@ -39,8 +39,8 @@ func main() {
 		google.New(os.Getenv("GOOGLE_CLIENT_ID"), os.Getenv("GOOGLE_CLIENT_SECRET"), "http://localhost:3000/auth/google/callback", "email", "profile"),
 	)
 
-	p := pat.New()
-	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
+	p := mux.NewRouter()
+	p.HandleFunc("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
 
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
@@ -51,17 +51,17 @@ func main() {
 		t.Execute(res, user)
 	})
 
-	p.Get("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
+	p.HandleFunc("/logout/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		gothic.Logout(res, req)
 		res.Header().Set("Location", "/")
 		res.WriteHeader(http.StatusTemporaryRedirect)
 	})
 
-	p.Get("/auth/{provider}", func(res http.ResponseWriter, req *http.Request) {
+	p.HandleFunc("/auth/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		gothic.BeginAuthHandler(res, req)
 	})
 
-	p.Get("/", func(res http.ResponseWriter, req *http.Request) {
+	p.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
 		t, _ := template.ParseFiles("templates/index.html")
 		t.Execute(res, false)
 	})
